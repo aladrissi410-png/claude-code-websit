@@ -1,300 +1,201 @@
-import { useEffect, useMemo, useState, type CSSProperties } from 'react';
-import { ArrowLeft, ArrowRight } from 'lucide-react';
+import { useEffect, useRef, useState, type CSSProperties } from "react";
+import { ChevronLeft, ChevronRight, Sparkles, ArrowLeft } from "lucide-react";
+import { CakeIllo, CookiesIllo, GiftBoxIllo, Twinkles } from "./illustrations";
+import { SITE } from "../data/content";
 
-const IMAGES = [
-  {
-    src: 'https://cdn3d.iconscout.com/3d/premium/thumb/cake-4993153-4160456.png',
-    bg: '#D5A6A8',
-    panel: '#E3C1C3',
-  }, // Dusty Pink
-  {
-    src: 'https://cdn3d.iconscout.com/3d/premium/thumb/chocolate-cake-5026939-4185514.png',
-    bg: '#FDE482',
-    panel: '#FDE99D',
-  }, // Playful Yellow
-  {
-    src: 'https://cdn3d.iconscout.com/3d/premium/thumb/birthday-cake-4993149-4160452.png',
-    bg: '#A8D5BA',
-    panel: '#C2E3D0',
-  }, // Mint Green
-  {
-    src: 'https://cdn3d.iconscout.com/3d/premium/thumb/strawberry-cake-5026943-4185518.png',
-    bg: '#B4A8D5',
-    panel: '#CBC2E3',
-  }, // Soft Lavender
+const ITEMS = [
+  { key: "cake", label: "الكيكة الكاملة", Illo: CakeIllo, bg: "#F3DCC4", panel: "#F8E8D6" },
+  { key: "cookies", label: "كوكيز فاخر", Illo: CookiesIllo, bg: "#EAD3B0", panel: "#F3E2C6" },
+  { key: "gift", label: "صندوق هدايا", Illo: GiftBoxIllo, bg: "#CFE0F0", panel: "#E2EDF8" },
 ];
 
-const EASE = 'cubic-bezier(0.4, 0, 0.2, 1)';
+const EASE = "cubic-bezier(0.4, 0, 0.2, 1)";
 const DURATION = 650;
-
-type Role = 'center' | 'left' | 'right' | 'back';
-
-interface Twinkle {
-  left: number;
-  top: number;
-  size: number;
-  delay: number;
-  duration: number;
-  star: boolean;
-}
-
-// Four-point star shape for the golden glimmer particles
-const STAR_CLIP =
-  'polygon(50% 0%, 61% 39%, 100% 50%, 61% 61%, 50% 100%, 39% 61%, 0% 50%, 39% 39%)';
-
-function makeTwinkles(count: number): Twinkle[] {
-  return Array.from({ length: count }, () => ({
-    left: Math.random() * 100,
-    top: Math.random() * 100,
-    size: 4 + Math.random() * 10,
-    delay: Math.random() * 4,
-    duration: 2 + Math.random() * 3,
-    star: Math.random() > 0.45,
-  }));
-}
+type Role = "center" | "side-a" | "side-b";
 
 export default function Hero() {
-  const [activeIndex, setActiveIndex] = useState(0);
-  const [isAnimating, setIsAnimating] = useState(false);
+  const [active, setActive] = useState(0);
+  const [animating, setAnimating] = useState(false);
   const [isMobile, setIsMobile] = useState(
-    typeof window !== 'undefined' ? window.innerWidth < 640 : false,
+    typeof window !== "undefined" ? window.innerWidth < 640 : false,
   );
-
-  const twinkles = useMemo(() => makeTwinkles(26), []);
-
-  // Preload all 4 cake renders on mount
-  useEffect(() => {
-    IMAGES.forEach(({ src }) => {
-      const img = new Image();
-      img.src = src;
-    });
-  }, []);
+  const hover = useRef(false);
 
   useEffect(() => {
     const onResize = () => setIsMobile(window.innerWidth < 640);
-    window.addEventListener('resize', onResize);
-    return () => window.removeEventListener('resize', onResize);
+    window.addEventListener("resize", onResize);
+    return () => window.removeEventListener("resize", onResize);
   }, []);
 
-  const navigate = (dir: 'next' | 'prev') => {
-    if (isAnimating) return;
-    setIsAnimating(true);
-    setActiveIndex((prev) => (dir === 'next' ? (prev + 1) % 4 : (prev + 3) % 4));
-    window.setTimeout(() => setIsAnimating(false), DURATION);
+  const go = (dir: "next" | "prev") => {
+    if (animating) return;
+    setAnimating(true);
+    setActive((p) => (dir === "next" ? (p + 1) % 3 : (p + 2) % 3));
+    window.setTimeout(() => setAnimating(false), DURATION);
   };
 
-  const roleOf = (index: number): Role => {
-    if (index === activeIndex) return 'center';
-    if (index === (activeIndex + 3) % 4) return 'left';
-    if (index === (activeIndex + 1) % 4) return 'right';
-    return 'back';
+  // auto-advance
+  useEffect(() => {
+    const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    if (reduce) return;
+    const id = window.setInterval(() => {
+      if (!hover.current) setActive((p) => (p + 1) % 3);
+    }, 3600);
+    return () => window.clearInterval(id);
+  }, []);
+
+  const roleOf = (i: number): Role => {
+    if (i === active) return "center";
+    if (i === (active + 1) % 3) return "side-a";
+    return "side-b";
   };
 
-  const roleStyle = (role: Role): CSSProperties => {
+  const styleFor = (role: Role): CSSProperties => {
     const base: CSSProperties = {
-      position: 'absolute',
-      aspectRatio: '1 / 1',
-      transition: `transform ${DURATION}ms ${EASE}, filter ${DURATION}ms ${EASE}, opacity ${DURATION}ms ${EASE}, left ${DURATION}ms ${EASE}, bottom ${DURATION}ms ${EASE}, height ${DURATION}ms ${EASE}`,
-      willChange: 'transform, filter, opacity',
+      position: "absolute",
+      top: "50%",
+      transition: `all ${DURATION}ms ${EASE}`,
+      willChange: "transform, filter, opacity",
     };
+    const c = isMobile ? 1.0 : 1.2;
     switch (role) {
-      case 'center':
+      case "center":
         return {
           ...base,
-          transform: `translateX(-50%) scale(${isMobile ? 1.25 : 1.68})`,
-          filter: 'none',
+          left: "50%",
+          transform: `translate(-50%, -50%) scale(${c})`,
+          filter: "drop-shadow(0 30px 40px rgba(90,68,53,0.25))",
           opacity: 1,
           zIndex: 20,
-          left: '50%',
-          height: isMobile ? '50%' : '80%',
-          bottom: isMobile ? '25%' : '5%',
+          width: isMobile ? 230 : 300,
+          height: isMobile ? 230 : 300,
         };
-      case 'left':
+      case "side-a":
         return {
           ...base,
-          transform: 'translateX(-50%) scale(0.85)',
-          filter: 'blur(3px)',
-          opacity: 0.75,
+          left: isMobile ? "92%" : "78%",
+          transform: "translate(-50%, -50%) scale(0.62)",
+          filter: "blur(2px)",
+          opacity: isMobile ? 0 : 0.7,
           zIndex: 10,
-          left: isMobile ? '15%' : '25%',
-          height: isMobile ? '20%' : '40%',
-          bottom: isMobile ? '35%' : '15%',
+          width: 260,
+          height: 260,
         };
-      case 'right':
+      case "side-b":
         return {
           ...base,
-          transform: 'translateX(-50%) scale(0.85)',
-          filter: 'blur(3px)',
-          opacity: 0.75,
+          left: isMobile ? "8%" : "22%",
+          transform: "translate(-50%, -50%) scale(0.62)",
+          filter: "blur(2px)",
+          opacity: isMobile ? 0 : 0.7,
           zIndex: 10,
-          left: isMobile ? '85%' : '75%',
-          height: isMobile ? '20%' : '40%',
-          bottom: isMobile ? '35%' : '15%',
-        };
-      case 'back':
-        return {
-          ...base,
-          transform: 'translateX(-50%) scale(0.6)',
-          filter: 'blur(6px)',
-          opacity: 0.5,
-          zIndex: 5,
-          left: '50%',
-          height: isMobile ? '15%' : '30%',
-          bottom: isMobile ? '40%' : '20%',
+          width: 260,
+          height: 260,
         };
     }
   };
 
   return (
-    <div
+    <section
+      id="home"
       className="relative w-full overflow-hidden"
       style={{
-        backgroundColor: IMAGES[activeIndex].bg,
-        transition: `background-color ${DURATION}ms ${EASE}`,
-        fontFamily: "'Inter', sans-serif",
+        background: `linear-gradient(180deg, ${ITEMS[active].panel} 0%, var(--cream) 78%)`,
+        transition: `background ${DURATION}ms ${EASE}`,
       }}
+      onMouseEnter={() => (hover.current = true)}
+      onMouseLeave={() => (hover.current = false)}
     >
-      <div className="relative w-full" style={{ height: '100vh', overflow: 'hidden' }}>
-        {/* 1. Golden twinkle effect */}
-        <div className="absolute inset-0 pointer-events-none" style={{ zIndex: 1 }}>
-          {twinkles.map((t, i) => (
-            <span
-              key={i}
-              style={{
-                position: 'absolute',
-                left: `${t.left}%`,
-                top: `${t.top}%`,
-                width: t.size,
-                height: t.size,
-                backgroundColor: '#D4AF37',
-                clipPath: t.star ? STAR_CLIP : undefined,
-                borderRadius: t.star ? undefined : '9999px',
-                animation: `basty-twinkle ${t.duration}s ease-in-out ${t.delay}s infinite`,
-                opacity: 0.2,
-              }}
-            />
-          ))}
-        </div>
+      <Twinkles count={24} />
+      {/* ambient glow */}
+      <div
+        className="pointer-events-none absolute -top-32 right-[-10%] h-[420px] w-[420px] rounded-full"
+        style={{ background: "radial-gradient(circle, rgba(201,162,75,0.22), transparent 70%)", zIndex: 0 }}
+      />
+      <div
+        className="pointer-events-none absolute bottom-[-10%] left-[-10%] h-[420px] w-[420px] rounded-full"
+        style={{ background: "radial-gradient(circle, rgba(199,93,93,0.16), transparent 70%)", zIndex: 0 }}
+      />
 
-        {/* 2. Giant ghost text */}
-        <div
-          className="absolute inset-x-0 flex items-center justify-center pointer-events-none select-none"
-          style={{ zIndex: 2, top: '18%' }}
+      <div className="container-b relative z-10 flex min-h-screen flex-col items-center justify-center pt-28 pb-16 text-center">
+        <span className="eyebrow reveal is-visible">
+          <Sparkles size={16} />
+          {SITE.tagline} · {SITE.subTagline}
+        </span>
+
+        <h1
+          className="font-display mt-6 leading-none text-[var(--brown)]"
+          style={{ fontSize: "clamp(5rem, 22vw, 13rem)", fontWeight: 700 }}
         >
-          <h1
-            style={{
-              fontFamily: "'Anton', sans-serif",
-              fontSize: 'clamp(90px, 28vw, 380px)',
-              fontWeight: 900,
-              color: '#FFFFFF',
-              opacity: 0.85,
-              lineHeight: 1,
-              textTransform: 'uppercase',
-              letterSpacing: '-0.02em',
-              whiteSpace: 'nowrap',
-              margin: 0,
-            }}
-          >
-            CAKE ART
-          </h1>
+          باستي
+        </h1>
+
+        <p className="mt-2 max-w-2xl text-lg font-medium text-[var(--muted)] sm:text-xl">
+          كيكاتٌ مخصّصة، كوكيز فاخر، وصناديق هدايا أنيقة — تُصنع بحبٍّ لتُحوّل كل مناسبة إلى ذكرى لا تُنسى.
+        </p>
+
+        {/* carousel stage */}
+        <div className="relative mt-6 h-[300px] w-full sm:h-[340px]">
+          {ITEMS.map((item, i) => {
+            const { Illo } = item;
+            return (
+              <div key={item.key} style={styleFor(roleOf(i))}>
+                <Illo style={{ width: "100%", height: "100%" }} />
+              </div>
+            );
+          })}
         </div>
 
-        {/* 3. Top-left brand label */}
-        <div className="absolute top-6 left-4 sm:left-8" style={{ zIndex: 60 }}>
-          <span
-            className="inline-block bg-white/20 px-3 py-1 rounded-full text-xs font-bold uppercase text-white"
-            style={{ opacity: 0.95, letterSpacing: '0.18em' }}
+        {/* controls */}
+        <div className="mt-2 flex items-center gap-5">
+          <button
+            type="button"
+            aria-label="السابق"
+            onClick={() => go("prev")}
+            className="flex h-12 w-12 items-center justify-center rounded-full border border-[var(--line)] bg-white text-[var(--brown)] transition hover:scale-110 hover:bg-[var(--brown)] hover:text-white"
           >
-            BASTY
-          </span>
-        </div>
+            <ChevronRight size={22} />
+          </button>
 
-        {/* 4. Carousel */}
-        <div className="absolute inset-0" style={{ zIndex: 3 }}>
-          {IMAGES.map((item, index) => (
-            <div key={item.src} style={roleStyle(roleOf(index))}>
-              <img
-                src={item.src}
-                alt={`Custom cake design ${index + 1}`}
-                draggable={false}
-                className="drop-shadow-2xl"
-                style={{
-                  width: '100%',
-                  height: '100%',
-                  objectFit: 'contain',
-                  objectPosition: 'bottom center',
-                }}
-              />
+          <div className="min-w-[120px] text-center">
+            <div className="font-display text-xl font-bold text-[var(--brown)]">
+              {ITEMS[active].label}
             </div>
-          ))}
-        </div>
-
-        {/* 5. Bottom-left text + nav buttons */}
-        <div
-          className="absolute bottom-6 left-4 sm:bottom-20 sm:left-24"
-          style={{ zIndex: 60, maxWidth: 360 }}
-        >
-          <p
-            className="font-bold uppercase tracking-widest mb-2 sm:mb-3 text-base sm:text-[22px] text-gray-900"
-            style={{ opacity: 0.95, letterSpacing: '0.02em' }}
-          >
-            BASTY CUSTOM CAKES
-          </p>
-          <p
-            className="hidden sm:block text-sm text-gray-800 font-medium mb-4 sm:mb-5"
-            style={{ opacity: 0.85, lineHeight: 1.6 }}
-          >
-            Design your dream cake with our interactive 3D builder. From premium chocolate
-            finishes to custom shapes, every detail is crafted to perfection. Delivered
-            fresh. Order your masterpiece today.
-          </p>
-          <div className="flex gap-3">
-            <button
-              type="button"
-              aria-label="Previous cake"
-              onClick={() => navigate('prev')}
-              className="w-12 h-12 sm:w-16 sm:h-16 flex items-center justify-center rounded-full border-2 border-white bg-transparent text-white hover:scale-[1.08] hover:bg-white/20"
-              style={{
-                transition: 'transform 150ms, background-color 150ms',
-                cursor: 'pointer',
-              }}
-            >
-              <ArrowLeft size={26} strokeWidth={2.25} />
-            </button>
-            <button
-              type="button"
-              aria-label="Next cake"
-              onClick={() => navigate('next')}
-              className="w-12 h-12 sm:w-16 sm:h-16 flex items-center justify-center rounded-full border-2 border-white bg-transparent text-white hover:scale-[1.08] hover:bg-white/20"
-              style={{
-                transition: 'transform 150ms, background-color 150ms',
-                cursor: 'pointer',
-              }}
-            >
-              <ArrowRight size={26} strokeWidth={2.25} />
-            </button>
+            <div className="mt-2 flex justify-center gap-1.5">
+              {ITEMS.map((_, i) => (
+                <span
+                  key={i}
+                  className="h-2 rounded-full transition-all"
+                  style={{
+                    width: i === active ? 22 : 8,
+                    background: i === active ? "var(--coral)" : "var(--line)",
+                  }}
+                />
+              ))}
+            </div>
           </div>
+
+          <button
+            type="button"
+            aria-label="التالي"
+            onClick={() => go("next")}
+            className="flex h-12 w-12 items-center justify-center rounded-full border border-[var(--line)] bg-white text-[var(--brown)] transition hover:scale-110 hover:bg-[var(--brown)] hover:text-white"
+          >
+            <ChevronLeft size={22} />
+          </button>
         </div>
 
-        {/* 6. Bottom-right link */}
-        <a
-          href="#design"
-          className="absolute bottom-6 right-4 sm:bottom-20 sm:right-10 flex items-center text-gray-900 no-underline opacity-95 hover:opacity-100"
-          style={{
-            zIndex: 60,
-            fontFamily: "'Anton', sans-serif",
-            fontSize: 'clamp(20px, 4vw, 56px)',
-            fontWeight: 400,
-            letterSpacing: '-0.02em',
-            lineHeight: 1,
-            textTransform: 'uppercase',
-            transition: 'opacity 200ms',
-          }}
-        >
-          DESIGN YOURS
-          <ArrowRight className="w-5 h-5 sm:w-8 sm:h-8 ml-2" strokeWidth={2.25} />
-        </a>
+        {/* CTAs */}
+        <div className="mt-9 flex flex-wrap items-center justify-center gap-3">
+          <a href="#contact" className="btn btn-primary">
+            اطلب كيكتك الآن
+            <ArrowLeft size={18} />
+          </a>
+          <a href="#products" className="btn btn-ghost">
+            تصفّح المنتجات
+          </a>
+        </div>
       </div>
-    </div>
+    </section>
   );
 }
