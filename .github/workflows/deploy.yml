@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - main
+      - claude/gracious-mendel-ew41b1
       - claude/upbeat-ramanujan-eifpzg
     paths:
       - 'basty-motion-website/website/**'
