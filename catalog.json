@@ -1,0 +1,383 @@
+{
+ "cats": [
+  {
+   "id": "games",
+   "label": "ألعاب"
+  },
+  {
+   "id": "telecom",
+   "label": "رصيد واتصالات"
+  },
+  {
+   "id": "stores",
+   "label": "متاجر"
+  }
+ ],
+ "brands": [
+  {
+   "id": "pubg",
+   "name": "PUBG MOBILE",
+   "ar": "ببجي موبايل",
+   "cat": "games",
+   "tone": "y",
+   "img": "/img/c-pubg.webp",
+   "items": [
+    {
+     "id": "pubg-60",
+     "label": "شدة 60 UC",
+     "price": 12.5
+    },
+    {
+     "id": "pubg-325",
+     "label": "شدة 325 UC",
+     "price": 60
+    },
+    {
+     "id": "pubg-660",
+     "label": "شدة 660 UC",
+     "price": 123
+    },
+    {
+     "id": "pubg-1800",
+     "label": "شدة 1800 UC",
+     "price": 300
+    },
+    {
+     "id": "pubg-3850",
+     "label": "شدة 3850 UC",
+     "price": 605
+    }
+   ]
+  },
+  {
+   "id": "freefire",
+   "name": "FREE FIRE",
+   "ar": "فري فاير",
+   "cat": "games",
+   "tone": "o",
+   "img": "/img/c-freefire.webp",
+   "items": [
+    {
+     "id": "ff-1",
+     "label": "Free Fire - 1$",
+     "price": 13.5
+    },
+    {
+     "id": "ff-2",
+     "label": "Free Fire - 2$",
+     "price": 27
+    },
+    {
+     "id": "ff-5",
+     "label": "Free Fire - 5$",
+     "price": 65
+    },
+    {
+     "id": "ff-10",
+     "label": "Free Fire - 10$",
+     "price": 130
+    }
+   ]
+  },
+  {
+   "id": "xbox",
+   "name": "XBOX",
+   "ar": "إكس بوكس",
+   "cat": "games",
+   "tone": "g",
+   "img": "/img/c-xbox.webp",
+   "items": [
+    {
+     "id": "xbox-5",
+     "label": "Xbox US - 5$",
+     "price": 65
+    },
+    {
+     "id": "xbox-10",
+     "label": "Xbox US - 10$",
+     "price": 123.5
+    },
+    {
+     "id": "xbox-15",
+     "label": "Xbox US - 15$",
+     "price": 185
+    },
+    {
+     "id": "xbox-20",
+     "label": "Xbox US - 20$",
+     "price": 248
+    },
+    {
+     "id": "xbox-25",
+     "label": "Xbox US - 25$",
+     "price": 300.5
+    },
+    {
+     "id": "xbox-50",
+     "label": "Xbox US - 50$",
+     "price": 610
+    }
+   ]
+  },
+  {
+   "id": "roblox",
+   "name": "ROBLOX",
+   "ar": "روبلوكس",
+   "cat": "games",
+   "tone": "c",
+   "img": "/img/c-roblox.webp",
+   "items": [
+    {
+     "id": "roblox-10",
+     "label": "Roblox US - 10$",
+     "price": 125
+    },
+    {
+     "id": "roblox-25",
+     "label": "Roblox US - 25$",
+     "price": 300
+    },
+    {
+     "id": "roblox-50",
+     "label": "Roblox US - 50$",
+     "price": 600
+    }
+   ]
+  },
+  {
+   "id": "amazon",
+   "name": "AMAZON US",
+   "ar": "أمازون",
+   "cat": "stores",
+   "tone": "o",
+   "img": "/img/c-amazon.webp",
+   "items": [
+    {
+     "id": "amz-10",
+     "label": "Amazon US - 10$",
+     "price": 134
+    },
+    {
+     "id": "amz-25",
+     "label": "Amazon US - 25$",
+     "price": 300
+    },
+    {
+     "id": "amz-50",
+     "label": "Amazon US - 50$",
+     "price": 600
+    },
+    {
+     "id": "amz-100",
+     "label": "Amazon US - 100$",
+     "price": 1220
+    }
+   ]
+  },
+  {
+   "id": "libyana",
+   "name": "LIBYANA",
+   "ar": "ليبيانا",
+   "cat": "telecom",
+   "tone": "p",
+   "img": "/img/c-libyana.webp",
+   "items": [
+    {
+     "id": "lib-3",
+     "label": "ليبيانا - 3",
+     "price": 3
+    },
+    {
+     "id": "lib-5",
+     "label": "ليبيانا - 5",
+     "price": 5
+    },
+    {
+     "id": "lib-10",
+     "label": "ليبيانا - 10",
+     "price": 10
+    },
+    {
+     "id": "lib-30",
+     "label": "ليبيانا - 30",
+     "price": 30
+    },
+    {
+     "id": "lib-40",
+     "label": "ليبيانا - 40",
+     "price": 40
+    },
+    {
+     "id": "lib-100",
+     "label": "ليبيانا - 100",
+     "price": 100
+    }
+   ]
+  },
+  {
+   "id": "madar",
+   "name": "ALMADAR",
+   "ar": "المدار",
+   "cat": "telecom",
+   "tone": "g",
+   "img": "/img/c-madar.webp",
+   "items": [
+    {
+     "id": "mad-3",
+     "label": "المدار - 3",
+     "price": 3
+    },
+    {
+     "id": "mad-5",
+     "label": "المدار - 5",
+     "price": 5
+    },
+    {
+     "id": "mad-10",
+     "label": "المدار - 10",
+     "price": 10
+    },
+    {
+     "id": "mad-20",
+     "label": "المدار - 20",
+     "price": 20
+    },
+    {
+     "id": "mad-40",
+     "label": "المدار - 40",
+     "price": 40
+    },
+    {
+     "id": "mad-100",
+     "label": "المدار - 100",
+     "price": 100
+    }
+   ]
+  },
+  {
+   "id": "ltt",
+   "name": "LTT",
+   "ar": "ال تي تي",
+   "cat": "telecom",
+   "tone": "c",
+   "img": "/img/c-ltt.webp",
+   "items": [
+    {
+     "id": "ltt-2",
+     "label": "ال تي تي - 2",
+     "price": 2
+    },
+    {
+     "id": "ltt-5",
+     "label": "ال تي تي - 5",
+     "price": 5
+    },
+    {
+     "id": "ltt-10",
+     "label": "ال تي تي - 10",
+     "price": 10
+    },
+    {
+     "id": "ltt-20",
+     "label": "ال تي تي - 20",
+     "price": 20
+    },
+    {
+     "id": "ltt-30",
+     "label": "ال تي تي - 30",
+     "price": 30
+    },
+    {
+     "id": "ltt-55",
+     "label": "ال تي تي - 55",
+     "price": 55
+    },
+    {
+     "id": "ltt-100",
+     "label": "ال تي تي - 100",
+     "price": 100
+    }
+   ]
+  },
+  {
+   "id": "giga",
+   "name": "GIGA",
+   "ar": "جيجا",
+   "cat": "telecom",
+   "tone": "c",
+   "img": "/img/c-giga.webp",
+   "items": [
+    {
+     "id": "giga-5",
+     "label": "جيجا - 5",
+     "price": 5
+    },
+    {
+     "id": "giga-10",
+     "label": "جيجا - 10",
+     "price": 10
+    },
+    {
+     "id": "giga-30",
+     "label": "جيجا - 30",
+     "price": 30
+    },
+    {
+     "id": "giga-50",
+     "label": "جيجا - 50",
+     "price": 50
+    },
+    {
+     "id": "giga-65",
+     "label": "جيجا - 65",
+     "price": 65
+    },
+    {
+     "id": "giga-100",
+     "label": "جيجا - 100",
+     "price": 100
+    },
+    {
+     "id": "giga-120",
+     "label": "جيجا - 120",
+     "price": 120
+    }
+   ]
+  },
+  {
+   "id": "connect",
+   "name": "CONNECT",
+   "ar": "كونكت",
+   "cat": "telecom",
+   "tone": "p",
+   "img": "/img/c-connect.webp",
+   "items": [
+    {
+     "id": "con-5",
+     "label": "كونكت - 5",
+     "price": 5
+    },
+    {
+     "id": "con-10",
+     "label": "كونكت - 10",
+     "price": 10
+    },
+    {
+     "id": "con-40",
+     "label": "كونكت - 40",
+     "price": 40
+    },
+    {
+     "id": "con-50",
+     "label": "كونكت - 50",
+     "price": 50
+    },
+    {
+     "id": "con-100",
+     "label": "كونكت - 100",
+     "price": 100
+    }
+   ]
+  }
+ ]
+}

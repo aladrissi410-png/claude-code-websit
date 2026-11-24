@@ -1,0 +1,280 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex">
+<title>لوحة كارد زون</title>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@500;700;900&family=Changa:wght@700;800&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box}
+body{margin:0;background:#050505;color:#fff;font-family:Cairo,sans-serif;font-size:16px}
+button,input,select,textarea{font-family:inherit;font-size:16px}
+h1,h2,h3{font-family:Changa,Cairo,sans-serif;margin:0}
+.wrap{max-width:860px;margin:0 auto;padding:16px 14px 120px}
+.top{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:10px 0 16px}
+.logo{display:flex;align-items:center;gap:10px;font-family:Changa;font-weight:800;font-size:24px}
+.logo i{display:inline-block;width:10px;height:26px;background:#9CFF2E;transform:skewX(-20deg)}
+.btn{min-height:46px;padding:0 18px;border-radius:12px;border:2px solid #2C3A26;background:#0B110A;color:#fff;font-weight:800;cursor:pointer}
+.btn:hover{border-color:#9CFF2E}
+.btn.p{background:#9CFF2E;border-color:#9CFF2E;color:#050505}
+.btn.d{border-color:#5a1a24;color:#FF5C7A}
+.btn.s{min-height:38px;padding:0 12px;font-size:14px;border-radius:10px}
+.tabs{display:flex;gap:8px;margin-bottom:16px}
+.tab{flex:1;min-height:48px;border-radius:12px;border:2px solid #2C3A26;background:transparent;color:#fff;font-weight:900;cursor:pointer}
+.tab.on{background:#9CFF2E;color:#050505;border-color:#9CFF2E}
+.card{background:#0B100A;border:2px solid #1D281A;border-radius:16px;margin-bottom:14px;overflow:hidden}
+.bh{display:flex;align-items:center;gap:12px;padding:12px;cursor:pointer}
+.bh img{width:56px;height:56px;border-radius:14px;object-fit:cover;background:#111;flex:none}
+.bh .t{flex:1;min-width:0}
+.bh .t b{display:block;font-size:18px}
+.bh .t small{color:#8FA085;font-weight:700}
+.tag{font-size:12px;font-weight:900;border-radius:999px;padding:2px 10px;background:#2a1215;color:#FF5C7A}
+.bb{display:none;padding:0 12px 14px;border-top:1px solid #1D281A}
+.card.open .bb{display:block}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:12px 0}
+label.f{display:flex;flex-direction:column;gap:4px;font-size:13px;font-weight:800;color:#B9C7B0}
+.in{width:100%;min-height:44px;border-radius:10px;border:2px solid #2C3A26;background:#050505;color:#fff;padding:0 12px}
+.in:focus{outline:none;border-color:#9CFF2E}
+.row{display:grid;grid-template-columns:1fr 110px auto auto;gap:8px;align-items:center;margin-bottom:8px}
+.row .chk{display:flex;align-items:center;gap:4px;font-size:13px;font-weight:800;color:#B9C7B0;white-space:nowrap}
+.row input[type=checkbox],.chk input{width:20px;height:20px;accent-color:#9CFF2E}
+.acts{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}
+.tones{display:flex;gap:8px}
+.tones button{width:36px;height:36px;border-radius:50%;border:3px solid transparent;cursor:pointer}
+.tones button.on{border-color:#fff}
+.bar{position:fixed;left:0;right:0;bottom:0;background:rgba(5,5,5,.94);border-top:2px solid #1D281A;padding:12px 14px calc(12px + env(safe-area-inset-bottom));display:flex;gap:10px;justify-content:center;z-index:5}
+.bar .btn{flex:1;max-width:400px}
+.dirty{color:#FFE600;font-weight:900;font-size:14px;text-align:center;margin-bottom:8px}
+.login{max-width:380px;margin:18vh auto 0;display:flex;flex-direction:column;gap:12px;padding:0 16px}
+.msg{min-height:22px;color:#FF5C7A;font-weight:800;text-align:center}
+.toast{position:fixed;top:16px;left:50%;transform:translateX(-50%);background:#9CFF2E;color:#050505;font-weight:900;padding:10px 18px;border-radius:12px;z-index:9;display:none}
+.order{padding:12px}
+.order .oh{display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap}
+.order .oh b{font-size:18px}
+.order ul{margin:8px 0;padding:0 18px;color:#D7E6CC}
+.st{font-size:12px;font-weight:900;border-radius:999px;padding:2px 10px}
+.st.new{background:#FFE600;color:#050505}.st.done{background:#1D281A;color:#9CFF2E}
+.help{background:#0B100A;border:2px dashed #2C3A26;border-radius:14px;padding:12px 14px;color:#B9C7B0;font-size:14px;line-height:1.8;margin-bottom:14px}
+.cats{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.cats .c{display:flex;gap:4px;align-items:center}
+.cats .c input{width:140px}
+@media (max-width:560px){.grid2{grid-template-columns:1fr}.row{grid-template-columns:1fr 84px auto}.row .del{grid-column:span 3}}
+</style>
+</head>
+<body>
+<div id="app"></div>
+<div class="toast" id="toast"></div>
+<script>
+(function () {
+  'use strict';
+  var KEY = 'cz-admin-key';
+  var TONES = { g: '#9CFF2E', o: '#FF7A00', c: '#27E0FF', p: '#FF3B6B', y: '#FFE600' };
+  var app = document.getElementById('app');
+  var S = { key: sessionStorage.getItem(KEY) || '', tab: 'cards', cat: null, orders: [], open: {}, dirty: false };
+
+  function esc(t) { return String(t == null ? '' : t).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); }
+  function toast(t) { var el = document.getElementById('toast'); el.textContent = t; el.style.display = 'block'; clearTimeout(toast.t); toast.t = setTimeout(function () { el.style.display = 'none'; }, 2200); }
+  function uid(p) { return p + '-' + Date.now().toString(36).slice(-4) + Math.random().toString(36).slice(2, 5); }
+  function api(path, opt) {
+    opt = opt || {};
+    opt.headers = Object.assign({ 'x-admin-key': S.key }, opt.headers || {});
+    return fetch(path, opt).then(function (r) {
+      if (r.status === 401) { S.key = ''; sessionStorage.removeItem(KEY); render(); throw new Error('auth'); }
+      return r.json().then(function (d) { if (!r.ok) throw new Error(d.error || r.status); return d; });
+    });
+  }
+  function dirty() { S.dirty = true; document.getElementById('dirty').style.display = 'block'; }
+
+  // ---------- login ----------
+  function loginView() {
+    app.innerHTML = '<div class="login"><div class="logo" style="justify-content:center"><i></i>لوحة كارد زون</div>' +
+      '<input class="in" id="pw" type="password" placeholder="كلمة السر" autocomplete="current-password">' +
+      '<button class="btn p" id="go">دخول</button><div class="msg" id="msg"></div></div>';
+    var pw = document.getElementById('pw');
+    pw.focus();
+    var go = function () {
+      S.key = pw.value.trim();
+      document.getElementById('msg').textContent = '...';
+      fetch('/api/admin/check', { headers: { 'x-admin-key': S.key } }).then(function (r) {
+        if (!r.ok) { document.getElementById('msg').textContent = 'كلمة السر غير صحيحة'; return; }
+        sessionStorage.setItem(KEY, S.key);
+        loadAll();
+      });
+    };
+    document.getElementById('go').onclick = go;
+    pw.onkeydown = function (e) { if (e.key === 'Enter') go(); };
+  }
+
+  function loadAll() {
+    fetch('/api/catalog', { cache: 'no-store' }).then(function (r) { return r.json(); }).then(function (c) {
+      S.cat = c; S.dirty = false; render();
+    });
+  }
+
+  // ---------- cards editor ----------
+  function catOptions(sel) {
+    return S.cat.cats.map(function (c) { return '<option value="' + esc(c.id) + '"' + (c.id === sel ? ' selected' : '') + '>' + esc(c.label) + '</option>'; }).join('');
+  }
+  function brandView(b, bi) {
+    var items = b.items.map(function (it, ii) {
+      return '<div class="row">' +
+        '<input class="in" data-b="' + bi + '" data-i="' + ii + '" data-f="label" value="' + esc(it.label) + '" placeholder="اسم الفئة مثل Xbox US - 10$">' +
+        '<input class="in" data-b="' + bi + '" data-i="' + ii + '" data-f="price" value="' + esc(it.price) + '" inputmode="decimal" placeholder="السعر">' +
+        '<label class="chk"><input type="checkbox" data-b="' + bi + '" data-i="' + ii + '" data-f="out"' + (it.out ? ' checked' : '') + '>نفد</label>' +
+        '<button class="btn s d del" data-act="delItem" data-b="' + bi + '" data-i="' + ii + '">حذف</button></div>';
+    }).join('');
+    var tones = Object.keys(TONES).map(function (t) {
+      return '<button style="background:' + TONES[t] + '" class="' + (b.tone === t ? 'on' : '') + '" data-act="tone" data-b="' + bi + '" data-t="' + t + '" aria-label="لون"></button>';
+    }).join('');
+    return '<div class="card' + (S.open[b.id] ? ' open' : '') + '">' +
+      '<div class="bh" data-act="toggle" data-id="' + esc(b.id) + '"><img src="' + esc(b.img) + '" alt="">' +
+        '<div class="t"><b>' + esc(b.ar || b.name) + '</b><small>' + b.items.length + ' فئات · ' + esc((S.cat.cats.filter(function (c) { return c.id === b.cat; })[0] || {}).label || '') + '</small></div>' +
+        (b.hidden ? '<span class="tag">مخفي</span>' : '') + '<span style="font-size:22px">' + (S.open[b.id] ? '▴' : '▾') + '</span></div>' +
+      '<div class="bb">' +
+        '<div class="grid2">' +
+          '<label class="f">الاسم بالعربي<input class="in" data-b="' + bi + '" data-f="ar" value="' + esc(b.ar) + '"></label>' +
+          '<label class="f">الاسم بالإنجليزي (يظهر كبير على الكرت)<input class="in" data-b="' + bi + '" data-f="name" value="' + esc(b.name) + '"></label>' +
+          '<label class="f">القسم<select class="in" data-b="' + bi + '" data-f="cat">' + catOptions(b.cat) + '</select></label>' +
+          '<label class="f">لون الكرت<div class="tones">' + tones + '</div></label>' +
+        '</div>' +
+        '<div style="font-weight:900;margin:6px 0 8px">الفئات والأسعار (د.ل)</div>' + items +
+        '<div class="acts">' +
+          '<button class="btn s p" data-act="addItem" data-b="' + bi + '">+ إضافة فئة</button>' +
+          '<label class="btn s" style="display:inline-flex;align-items:center">تغيير الصورة<input type="file" accept="image/*" data-act="img" data-b="' + bi + '" hidden></label>' +
+          '<button class="btn s" data-act="up" data-b="' + bi + '">↑ تقديم</button>' +
+          '<button class="btn s" data-act="down" data-b="' + bi + '">↓ تأخير</button>' +
+          '<button class="btn s" data-act="hide" data-b="' + bi + '">' + (b.hidden ? 'إظهار في الموقع' : 'إخفاء من الموقع') + '</button>' +
+          '<button class="btn s d" data-act="delBrand" data-b="' + bi + '">حذف هذا الكرت كله</button>' +
+        '</div></div></div>';
+  }
+  function cardsView() {
+    var cats = S.cat.cats.map(function (c, ci) {
+      return '<span class="c"><input class="in" data-c="' + ci + '" value="' + esc(c.label) + '"><button class="btn s d" data-act="delCat" data-c="' + ci + '">✕</button></span>';
+    }).join('');
+    return '<div class="help">• اضغط على أي كرت لتعديل أسعاره أو إضافة فئة.<br>• <b>+ كرت جديد</b> لإضافة نوع جديد (مثل نتفليكس) مع صورته.<br>• بعد أي تعديل اضغط <b>حفظ ونشر</b> بالأسفل، ويظهر في الموقع خلال ثوانٍ.</div>' +
+      S.cat.brands.map(brandView).join('') +
+      '<button class="btn p" style="width:100%;margin:4px 0 18px" data-act="addBrand">+ كرت جديد</button>' +
+      '<div class="card" style="padding:12px"><div style="font-weight:900;margin-bottom:8px">الأقسام (الأزرار فوق الكروت)</div><div class="cats">' + cats +
+      '<button class="btn s p" data-act="addCat">+ قسم</button></div></div>';
+  }
+
+  // ---------- orders ----------
+  function ordersView() {
+    if (!S.orders.length) return '<div class="help">لا توجد طلبات بعد. كل طلب يُرسل من الموقع يظهر هنا، ويصلك أيضًا على واتساب.</div>';
+    return S.orders.map(function (o) {
+      var d = new Date(o.at);
+      return '<div class="card order"><div class="oh"><b>' + esc(o.id) + ' · ' + esc(o.name) + '</b><span class="st ' + o.status + '">' + (o.status === 'done' ? 'تم التسليم' : 'جديد') + '</span></div>' +
+        '<small style="color:#8FA085">' + d.toLocaleString('ar-LY') + '</small>' +
+        '<ul>' + o.lines.map(function (l) { return '<li>' + esc(l.label) + ' × ' + l.qty + ' = ' + (l.price * l.qty) + ' د.ل</li>'; }).join('') + '</ul>' +
+        '<div style="font-weight:900;color:#9CFF2E">الإجمالي: ' + o.total + ' د.ل</div>' +
+        (o.note ? '<div style="color:#D7E6CC;margin-top:4px">ملاحظة: ' + esc(o.note) + '</div>' : '') +
+        '<div class="acts"><button class="btn s ' + (o.status === 'done' ? '' : 'p') + '" data-act="ostatus" data-id="' + esc(o.id) + '" data-s="' + (o.status === 'done' ? 'new' : 'done') + '">' + (o.status === 'done' ? 'إرجاع لجديد' : 'تم التسليم ✓') + '</button>' +
+        '<button class="btn s d" data-act="odel" data-id="' + esc(o.id) + '">حذف</button></div></div>';
+    }).join('');
+  }
+  function loadOrders() { api('/api/admin/orders').then(function (o) { S.orders = o; render(); }).catch(function () {}); }
+
+  function render() {
+    if (!S.key) return loginView();
+    if (!S.cat) { app.innerHTML = '<div class="login">...</div>'; return loadAll(); }
+    app.innerHTML = '<div class="wrap"><div class="top"><div class="logo"><i></i>لوحة كارد زون</div>' +
+      '<div style="display:flex;gap:8px"><a class="btn s" style="display:inline-flex;align-items:center;text-decoration:none" href="/" target="_blank">فتح الموقع</a><button class="btn s" data-act="logout">خروج</button></div></div>' +
+      '<div class="tabs"><button class="tab' + (S.tab === 'cards' ? ' on' : '') + '" data-act="tab" data-t="cards">الكروت والأسعار</button>' +
+      '<button class="tab' + (S.tab === 'orders' ? ' on' : '') + '" data-act="tab" data-t="orders">الطلبات</button></div>' +
+      (S.tab === 'cards' ? cardsView() : '<button class="btn s" data-act="reload" style="margin-bottom:12px">تحديث ↻</button>' + ordersView()) + '</div>' +
+      (S.tab === 'cards' ? '<div class="bar" style="flex-direction:column;align-items:center"><div class="dirty" id="dirty" style="display:' + (S.dirty ? 'block' : 'none') + '">عندك تعديلات غير محفوظة</div>' +
+        '<div style="display:flex;gap:10px;width:100%;justify-content:center"><button class="btn p" data-act="save">حفظ ونشر</button><button class="btn s" data-act="restore">رجوع لآخر نسخة</button></div></div>' : '');
+  }
+
+  // ---------- image upload (resized in the browser) ----------
+  function upload(file, done) {
+    var img = new Image();
+    img.onload = function () {
+      var size = 320, c = document.createElement('canvas');
+      c.width = size; c.height = size;
+      var g = c.getContext('2d'), s = Math.max(size / img.width, size / img.height);
+      var w = img.width * s, h = img.height * s;
+      g.drawImage(img, (size - w) / 2, (size - h) / 2, w, h);
+      c.toBlob(function (blob) {
+        api('/api/admin/image', { method: 'POST', headers: { 'content-type': blob.type }, body: blob })
+          .then(function (d) { done(d.url); }).catch(function (e) { toast('فشل رفع الصورة: ' + e.message); });
+      }, 'image/webp', 0.86);
+    };
+    img.onerror = function () { toast('الصورة غير صالحة'); };
+    img.src = URL.createObjectURL(file);
+  }
+
+  // ---------- events ----------
+  app.addEventListener('input', function (e) {
+    var t = e.target, b = t.getAttribute('data-b'), f = t.getAttribute('data-f');
+    if (t.hasAttribute('data-c')) { S.cat.cats[+t.getAttribute('data-c')].label = t.value; return dirty(); }
+    if (b == null || !f) return;
+    var obj = t.hasAttribute('data-i') ? S.cat.brands[+b].items[+t.getAttribute('data-i')] : S.cat.brands[+b];
+    obj[f] = t.type === 'checkbox' ? t.checked : (f === 'price' ? t.value.replace(',', '.') : t.value);
+    dirty();
+  });
+  app.addEventListener('change', function (e) {
+    var t = e.target;
+    if (t.getAttribute('data-f') === 'cat') { render(); }
+    if (t.getAttribute('data-act') === 'img' && t.files[0]) {
+      var b = S.cat.brands[+t.getAttribute('data-b')];
+      toast('جاري رفع الصورة...');
+      upload(t.files[0], function (u) { b.img = u; dirty(); render(); toast('تم رفع الصورة، اضغط حفظ ونشر'); });
+    }
+  });
+  app.addEventListener('click', function (e) {
+    var t = e.target.closest('[data-act]');
+    if (!t) return;
+    var a = t.getAttribute('data-act'), bi = +t.getAttribute('data-b'), B = S.cat && S.cat.brands;
+    if (a === 'img') return;
+    if (a === 'toggle') { var id = t.getAttribute('data-id'); S.open[id] = !S.open[id]; return render(); }
+    if (a === 'tab') { S.tab = t.getAttribute('data-t'); if (S.tab === 'orders') loadOrders(); return render(); }
+    if (a === 'reload') return loadOrders();
+    if (a === 'logout') { sessionStorage.removeItem(KEY); S.key = ''; return render(); }
+    if (a === 'addItem') { B[bi].items.push({ id: uid(B[bi].id), label: '', price: 0 }); dirty(); return render(); }
+    if (a === 'delItem') { if (!confirm('حذف هذه الفئة؟')) return; B[bi].items.splice(+t.getAttribute('data-i'), 1); dirty(); return render(); }
+    if (a === 'tone') { B[bi].tone = t.getAttribute('data-t'); dirty(); return render(); }
+    if (a === 'up' && bi > 0) { B.splice(bi - 1, 0, B.splice(bi, 1)[0]); dirty(); return render(); }
+    if (a === 'down' && bi < B.length - 1) { B.splice(bi + 1, 0, B.splice(bi, 1)[0]); dirty(); return render(); }
+    if (a === 'hide') { B[bi].hidden = !B[bi].hidden; dirty(); return render(); }
+    if (a === 'delBrand') { if (!confirm('حذف كرت ' + (B[bi].ar || B[bi].name) + ' بكل فئاته؟')) return; B.splice(bi, 1); dirty(); return render(); }
+    if (a === 'addBrand') {
+      var nb = { id: uid('b'), name: 'NEW CARD', ar: 'كرت جديد', cat: (S.cat.cats[0] || {}).id || '', tone: 'g', img: '/img/c-pubg.webp', items: [{ id: uid('i'), label: '', price: 0 }] };
+      B.push(nb); S.open[nb.id] = true; dirty(); render();
+      setTimeout(function () { window.scrollTo(0, document.body.scrollHeight); }, 50);
+      return toast('عبّي الاسم والفئات وغيّر الصورة، ثم حفظ ونشر');
+    }
+    if (a === 'addCat') { S.cat.cats.push({ id: uid('c'), label: 'قسم جديد' }); dirty(); return render(); }
+    if (a === 'delCat') {
+      var c = S.cat.cats[+t.getAttribute('data-c')];
+      if (B.some(function (b) { return b.cat === c.id; })) return toast('القسم فيه كروت، انقلها لقسم آخر أولًا');
+      S.cat.cats.splice(+t.getAttribute('data-c'), 1); dirty(); return render();
+    }
+    if (a === 'save') {
+      var bad = null;
+      B.forEach(function (b) { b.items.forEach(function (i) { if (!String(i.label).trim() || !(+i.price > 0)) bad = b.ar || b.name; }); });
+      if (bad) return toast('في ' + bad + ' فئة بدون اسم أو سعر');
+      t.disabled = true;
+      api('/api/admin/catalog', { method: 'PUT', headers: { 'content-type': 'application/json' }, body: JSON.stringify(S.cat) })
+        .then(function () { S.dirty = false; toast('تم الحفظ والنشر ✓'); render(); })
+        .catch(function (err) { toast('لم يُحفظ: ' + err.message); t.disabled = false; });
+      return;
+    }
+    if (a === 'restore') {
+      if (!confirm('ترجع للنسخة اللي قبل آخر حفظ؟')) return;
+      api('/api/admin/restore', { method: 'POST' }).then(function () { toast('تم الرجوع'); loadAll(); }).catch(function (err) { toast(err.message); });
+      return;
+    }
+    if (a === 'ostatus' || a === 'odel') {
+      if (a === 'odel' && !confirm('حذف الطلب من السجل؟')) return;
+      api('/api/admin/order', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ id: t.getAttribute('data-id'), status: t.getAttribute('data-s'), delete: a === 'odel' }) })
+        .then(loadOrders);
+    }
+  });
+  window.addEventListener('beforeunload', function (e) { if (S.dirty) { e.preventDefault(); e.returnValue = ''; } });
+  render();
+})();
+</script>
+</body>
+</html>
