@@ -13,7 +13,7 @@ async function fromRepo(env, path, ttl) {
   const ext = (path.split('.').pop() || '').toLowerCase();
   const res = await fetch(env.SRC + path, { cf: { cacheTtl: ttl, cacheEverything: true } });
   if (!res.ok) return new Response('Not found', { status: 404 });
-  return new Response(res.body, { headers: { 'content-type': TYPES[ext] || 'application/octet-stream', 'cache-control': `public, max-age=${ttl}`, ...SECURITY } });
+  return new Response(res.body, { headers: { 'content-type': TYPES[ext] || 'application/octet-stream', 'cache-control': 'public, max-age=' + ttl, ...SECURITY } });
 }
 
 async function getCatalog(env) {
